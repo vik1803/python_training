@@ -29,14 +29,6 @@ class ContactHelper:
         # Return to add contact page
         self.return_to_home_page()
 
-    def delete_first_contact(self):
-        wd = self.app.wd
-        # Select the first contact
-        wd.find_element_by_name("selected[]").click()
-        # Delete selected contact
-        wd.find_element_by_xpath("//input[@value='Видалити']").click()
-        wd.switch_to.alert.accept()
-
     def edit_first_contact(self, contact):
         wd = self.app.wd
         # Select the first contact
@@ -58,6 +50,14 @@ class ContactHelper:
         # Submit editing contact
         wd.find_element_by_xpath("//input[@value='Оновити']").click()
         self.return_to_home_page()
+        
+    def delete_first_contact(self):
+        wd = self.app.wd
+        # Select the first contact
+        wd.find_element_by_name("selected[]").click()
+        # Delete selected contact
+        wd.find_element_by_xpath("//input[@value='Видалити']").click()
+        wd.switch_to.alert.accept()
 
     def return_to_home_page(self):
         wd = self.app.wd
