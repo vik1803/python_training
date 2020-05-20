@@ -6,7 +6,8 @@ class ContactHelper:
 
     def open_add_contact_page(self):
         wd = self.app.wd
-        wd.find_element_by_link_text(u"Додати контакт").click()
+        if not (wd.current_url.endswith('/edit.php') and len(wd.find_elements_by_xpath("//input[@name='submit']")) > 0):
+            wd.find_element_by_link_text(u"Додати контакт").click()
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd
@@ -53,6 +54,7 @@ class ContactHelper:
         # Delete selected contact
         wd.find_element_by_xpath("//input[@value='Видалити']").click()
         wd.switch_to.alert.accept()
+        wd.find_element_by_xpath("//input[@value='Видалити']")
 
     def return_to_home_page(self):
         wd = self.app.wd
