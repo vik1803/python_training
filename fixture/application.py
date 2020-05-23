@@ -12,7 +12,7 @@ class Application:
         self.session = SessionHelper(self)
         self.group = GroupHelper(self)
         self.contact = ContactHelper(self)
-        self.wd.implicitly_wait(5)
+        self.wd.implicitly_wait(7)
 
     def is_valid(self):
         try:

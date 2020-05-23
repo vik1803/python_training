@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+from python_training.model.contact import Contact
+
+
 class ContactHelper:
 
     def __init__(self, app):
@@ -54,7 +57,7 @@ class ContactHelper:
         # Delete selected contact
         wd.find_element_by_xpath("//input[@value='Видалити']").click()
         wd.switch_to.alert.accept()
-        wd.find_element_by_xpath("//input[@value='Видалити']")
+        wd.find_elements_by_css_selector("div.msgbox")
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -63,3 +66,13 @@ class ContactHelper:
     def count(self):
         wd = self.app.wd
         return len(wd.find_elements_by_name('selected[]'))
+
+    def get_contacts_list(self):
+        wd = self.app.wd
+        contacts = []
+        for element in wd.find_elements_by_xpath("//tr[@name='entry']"):
+            id = element.find_element_by_xpath(".//input").get_attribute("value")
+            name = element.find_element_by_xpath("./*[3]").text
+            surname = element.find_element_by_xpath("./*[2]").text
+            contacts.append(Contact(id=id, name=name, surname=surname))
+        return contacts
