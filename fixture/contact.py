@@ -20,7 +20,7 @@ class ContactHelper:
             wd.find_element_by_name(field_name).send_keys(text)
 
     def fill_contact_form(self, contact):
-        wd = self.app.wd
+        # wd = self.app.wd
         self.change_field_value("firstname", contact.name)
         self.change_field_value("lastname", contact.surname)
         self.change_field_value("address", contact.address)
@@ -40,26 +40,36 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_name("selected[]").click()
 
-    def edit_first_contact(self, new_contact_data):
+    def select_contact_by_index(self, index):
         wd = self.app.wd
-        # self.open_groups_page()
-        self.select_first_contact()
-        # Open selected contact
-        wd.find_element_by_xpath("//img[@alt='Редагувати']").click()
+        wd.find_elements_by_name("selected[]")[index].click()
+
+    def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+        self.contacts_cache = None
+
+    def delete_contact_by_index(self, index):
+        wd = self.app.wd
+        self.select_contact_by_index(index)
+        # Delete selected contact
+        wd.find_element_by_xpath("//input[@value='Видалити']").click()
+        wd.switch_to.alert.accept()
+        wd.find_elements_by_css_selector("div.msgbox")
+        self.contacts_cache = None
+
+    def edit_first_contact(self, new_contact_data):
+        self.edit_contact_by_index(new_contact_data, 0)
+        self.contacts_cache = None
+
+    def edit_contact_by_index(self, new_contact_data, index):
+        wd = self.app.wd
+        # Open selected contact by index
+        wd.find_elements_by_xpath("//img[@alt='Редагувати']")[index].click()
         # Edit field
         self.fill_contact_form(new_contact_data)
         # Submit editing
         wd.find_element_by_xpath("//input[@value='Оновити']").click()
         self.return_to_home_page()
-        self.contacts_cache = None
-
-    def delete_first_contact(self):
-        wd = self.app.wd
-        self.select_first_contact()
-        # Delete selected contact
-        wd.find_element_by_xpath("//input[@value='Видалити']").click()
-        wd.switch_to.alert.accept()
-        wd.find_elements_by_css_selector("div.msgbox")
         self.contacts_cache = None
 
     def return_to_home_page(self):
