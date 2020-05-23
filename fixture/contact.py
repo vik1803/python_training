@@ -34,6 +34,7 @@ class ContactHelper:
         # Submit group creation
         wd.find_element_by_xpath("//input[@name='submit']").click()
         self.return_to_home_page()
+        self.contacts_cache = None
 
     def select_first_contact(self):
         wd = self.app.wd
@@ -50,6 +51,7 @@ class ContactHelper:
         # Submit editing
         wd.find_element_by_xpath("//input[@value='Оновити']").click()
         self.return_to_home_page()
+        self.contacts_cache = None
 
     def delete_first_contact(self):
         wd = self.app.wd
@@ -58,6 +60,7 @@ class ContactHelper:
         wd.find_element_by_xpath("//input[@value='Видалити']").click()
         wd.switch_to.alert.accept()
         wd.find_elements_by_css_selector("div.msgbox")
+        self.contacts_cache = None
 
     def return_to_home_page(self):
         wd = self.app.wd
@@ -67,12 +70,15 @@ class ContactHelper:
         wd = self.app.wd
         return len(wd.find_elements_by_name('selected[]'))
 
+    contacts_cache = None
+
     def get_contacts_list(self):
-        wd = self.app.wd
-        contacts = []
-        for element in wd.find_elements_by_xpath("//tr[@name='entry']"):
-            id = element.find_element_by_xpath(".//input").get_attribute("value")
-            name = element.find_element_by_xpath("./*[3]").text
-            surname = element.find_element_by_xpath("./*[2]").text
-            contacts.append(Contact(id=id, name=name, surname=surname))
-        return contacts
+        if self.contacts_cache is None:
+            wd = self.app.wd
+            self.contacts_cache = []
+            for element in wd.find_elements_by_xpath("//tr[@name='entry']"):
+                id = element.find_element_by_xpath(".//input").get_attribute("value")
+                name = element.find_element_by_xpath("./*[3]").text
+                surname = element.find_element_by_xpath("./*[2]").text
+                self.contacts_cache.append(Contact(id=id, name=name, surname=surname))
+        return self.contacts_cache
