@@ -25,6 +25,12 @@ class ContactHelper:
         self.change_field_value("lastname", contact.surname)
         self.change_field_value("address", contact.address)
         self.change_field_value("mobile", contact.mob_phone)
+        self.change_field_value("home", contact.home_phone)
+        self.change_field_value("work", contact.work_phone)
+        self.change_field_value("phone2", contact.secondary_phone)
+        self.change_field_value("email", contact.email_1)
+        self.change_field_value("email2", contact.email_2)
+        self.change_field_value("email3", contact.email_3)
 
     def add_new(self, contact):
         wd = self.app.wd
