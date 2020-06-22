@@ -50,6 +50,10 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_elements_by_name("selected[]")[index].click()
 
+    def select_contact_by_id(self, id):
+        wd = self.app.wd
+        wd.find_element_by_id(id).click()
+
     def delete_first_contact(self):
         self.delete_contact_by_index(0)
         self.contacts_cache = None
@@ -63,6 +67,15 @@ class ContactHelper:
         wd.find_elements_by_css_selector("div.msgbox")
         self.contacts_cache = None
 
+    def delete_contact_by_id(self, id):
+        wd = self.app.wd
+        self.select_contact_by_id(id)
+        # Delete selected contact
+        wd.find_element_by_xpath("//input[@value='Видалити']").click()
+        wd.switch_to.alert.accept()
+        wd.find_elements_by_css_selector("div.msgbox")
+        self.contacts_cache = None
+
     def edit_first_contact(self, new_contact_data):
         self.edit_contact_by_index(new_contact_data, 0)
         self.contacts_cache = None
@@ -70,6 +83,16 @@ class ContactHelper:
     def edit_contact_by_index(self, new_contact_data, index):
         wd = self.app.wd
         self.open_contact_to_edit_by_index(index)
+        # Edit field
+        self.fill_contact_form(new_contact_data)
+        # Submit editing
+        wd.find_element_by_xpath("//input[@value='Оновити']").click()
+        self.return_to_home_page()
+        self.contacts_cache = None
+
+    def edit_contact_by_id(self, new_contact_data, index):
+        wd = self.app.wd
+        self.open_contact_to_edit_by_id(index)
         # Edit field
         self.fill_contact_form(new_contact_data)
         # Submit editing
@@ -99,8 +122,14 @@ class ContactHelper:
                 address = element.find_element_by_xpath("./*[4]").text
                 all_emails = element.find_element_by_xpath("./*[5]").text
                 all_phones = element.find_element_by_xpath("./*[6]").text
-                self.contacts_cache.append(Contact(id=id, surname=surname, name=name, address=address,
-                                                   all_emails=all_emails, all_phones_from_home_page=all_phones))
+                self.contacts_cache.append(Contact(
+                    id=id,
+                    surname=surname,
+                    name=name,
+                    address=address,
+                    all_emails=all_emails,
+                    all_phones_from_home_page=all_phones
+                ))
         return self.contacts_cache
 
     # def get_contact_list(self):
@@ -123,6 +152,11 @@ class ContactHelper:
         wd = self.app.wd
         self.app.open_home_page()
         wd.find_elements_by_xpath("//img[@alt='Редагувати']")[index].click()
+
+    def open_contact_to_edit_by_id(self, index):
+        wd = self.app.wd
+        self.app.open_home_page()
+        wd.find_element_by_xpath("//*[@id='%s']/../..//img[@alt='Редагувати']" % index).click()
 
     def open_contact_view_by_index(self, index):
         wd = self.app.wd
