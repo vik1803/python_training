@@ -27,7 +27,7 @@ def test_edit_contact_surname(app, db, check_ui):
     contact = Contact(surname='Edited Surname')
     app.contact.edit_contact_by_id(contact, contact_id)
     new_contacts = db.get_contact_list()
-    old_contacts[index].surname= contact.surname
+    old_contacts[index].surname = contact.surname
     assert sorted(old_contacts, key=Contact.id_or_max) == sorted(new_contacts, key=Contact.id_or_max)
     if check_ui:
         assert sorted(new_contacts, key=Contact.id_or_max) == sorted(

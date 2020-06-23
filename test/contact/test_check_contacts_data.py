@@ -7,8 +7,8 @@ def clear(s):
     return re.sub("[() -]", "", s)
 
 
-def test_phones_on_home_page(app):
-    if app.contact.count() == 0:
+def test_phones_on_home_page(app, db):
+    if len(db.get_contact_list()) == 0:
         app.contact.add_new(Contact(name=''))
     index = randrange(len(app.contact.get_contacts_list()))
     contact_from_home_page = app.contact.get_contacts_list()[index]
@@ -16,8 +16,8 @@ def test_phones_on_home_page(app):
     assert contact_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(contact_from_edit_page)
 
 
-def test_phones_on_contact_view_page(app):
-    if app.contact.count() == 0:
+def test_phones_on_contact_view_page(app,db):
+    if len(db.get_contact_list()) == 0:
         app.contact.add_new(Contact(name=''))
     index = randrange(len(app.contact.get_contacts_list()))
     contact_from_view_page = app.contact.get_contact_from_view_page(index)
@@ -40,8 +40,8 @@ def merge_emails_like_on_home_page(contact):
                             filter(lambda x: x is not None, [contact.email_1, contact.email_2, contact.email_3])))
 
 
-def test_contacts_on_home_page(app):
-    if app.contact.count() == 0:
+def test_contacts_on_home_page(app,db):
+    if len(db.get_contact_list()) == 0:
         app.contact.add_new(Contact(name=''))
     index = randrange(len(app.contact.get_contacts_list()))
     contact_from_home_page = app.contact.get_contacts_list()[index]
@@ -52,3 +52,12 @@ def test_contacts_on_home_page(app):
     assert contact_from_home_page.address == contact_from_edit_page.address
     assert contact_from_home_page.all_phones_from_home_page == merge_phones_like_on_home_page(contact_from_edit_page)
     assert contact_from_home_page.all_emails == merge_emails_like_on_home_page(contact_from_edit_page)
+
+
+def test_compare_contacts_db_vs_ui(app, db):
+    if len(db.get_contact_list()) == 0:
+        app.contact.add_new(Contact(name=''))
+    contacts_from_db = db.get_contact_list()
+    contacts_from_home_page = app.contact.get_contacts_list()
+    assert sorted(contacts_from_db, key=Contact.id_or_max) == sorted(contacts_from_home_page, key=Contact.id_or_max)
+
