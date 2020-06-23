@@ -20,7 +20,12 @@ class ContactHelper:
             wd.find_element_by_name(field_name).clear()
             wd.find_element_by_name(field_name).send_keys(text)
 
-    def fill_contact_form(self, contact):
+    def select_group(self, group_id):
+        wd = self.app.wd
+        wd.find_element_by_name("new_group").click()
+        wd.find_element_by_xpath("//select[@name='new_group']/*[@value='%s']" % group_id).click()
+
+    def fill_contact_form(self, contact, group_id=None):
         self.change_field_value("firstname", contact.name)
         self.change_field_value("lastname", contact.surname)
         self.change_field_value("address", contact.address)
@@ -31,12 +36,14 @@ class ContactHelper:
         self.change_field_value("email", contact.email_1)
         self.change_field_value("email2", contact.email_2)
         self.change_field_value("email3", contact.email_3)
+        if group_id is not None:
+            self.select_group(group_id)
 
-    def add_new(self, contact):
+    def add_new(self, contact, group_id=None):
         wd = self.app.wd
         self.open_add_contact_page()
         # Fill contact form
-        self.fill_contact_form(contact)
+        self.fill_contact_form(contact, group_id)
         # Submit group creation
         wd.find_element_by_xpath("//input[@name='submit']").click()
         self.return_to_home_page()
